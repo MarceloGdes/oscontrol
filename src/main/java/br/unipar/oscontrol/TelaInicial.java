@@ -9,13 +9,16 @@ package br.unipar.oscontrol;
  * @author Marcelo
  */
 public class TelaInicial extends javax.swing.JFrame {
-
+    
+    private String usuarioLogado;
+    
     /**
      * Creates new form TelaInicial
      */
-    public TelaInicial() {
+    public TelaInicial(String usarioLodado) {
         initComponents();
         setLocationRelativeTo(null);
+        this.usuarioLogado = usarioLodado;
     }
 
     /**
@@ -74,7 +77,7 @@ public class TelaInicial extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btNovaOSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btNovaOSActionPerformed
-        new CadastroCliente().setVisible(true);
+        new CadastroCliente(usuarioLogado).setVisible(true);
     }//GEN-LAST:event_btNovaOSActionPerformed
 
 

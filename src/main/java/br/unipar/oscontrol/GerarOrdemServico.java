@@ -17,6 +17,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class GerarOrdemServico extends javax.swing.JFrame {
     private OrdemServico os;
+    private String usuarioLogado;
     
     private DefaultTableModel servicosTableModel = new DefaultTableModel();
     private DefaultTableModel pecasTableModel = new DefaultTableModel();
@@ -24,15 +25,17 @@ public class GerarOrdemServico extends javax.swing.JFrame {
     private int servicoSelectedRow = -1;
     private int pecaSelectedRow =  -1;
     
-    public GerarOrdemServico() {
+    public GerarOrdemServico(Cliente cliente, Veiculo veiculo, String usuarioLogado) {
         initComponents();
         setLocationRelativeTo(null); 
         
-//        os = new OrdemServico(cliente, veiculo);
-//        lbCliente.setText(cliente.getNome());
-//        lbVeiculo.setText(veiculo.getMarca() + " " + 
-//                veiculo.getModelo() + " " +
-//                veiculo.getAno()); 
+        this.usuarioLogado = usuarioLogado;
+        os = new OrdemServico(cliente, veiculo);
+        
+        lbCliente.setText(cliente.getNome());
+        lbVeiculo.setText(veiculo.getMarca() + " " + 
+            veiculo.getModelo() + " " +
+            veiculo.getAno()); 
 
         loadServicosTable();
         loadPecasTable();
@@ -496,7 +499,7 @@ public class GerarOrdemServico extends javax.swing.JFrame {
         }else {
             JOptionPane.showMessageDialog(this, 
                     "Você não selecionou nenhuma linha da tabela de serviços "
-                            + "para realizar a exclusão.",
+                            + "para realizar a exclusão."  + " Usuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -515,7 +518,7 @@ public class GerarOrdemServico extends javax.swing.JFrame {
         }else {
             JOptionPane.showMessageDialog(this, 
                     "Você não selecionou nenhuma linha da tabela de serviços"
-                            + " para realizar a edição.",
+                            + " para realizar a edição."  + " Usuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -536,7 +539,7 @@ public class GerarOrdemServico extends javax.swing.JFrame {
         }else {
             JOptionPane.showMessageDialog(this, 
                     "Você não selecionou nenhuma linha da tabela de peças"
-                            + " para realizar a edição.",
+                            + " para realizar a edição."  + " Usuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -552,7 +555,7 @@ public class GerarOrdemServico extends javax.swing.JFrame {
         }else {
             JOptionPane.showMessageDialog(this, 
                     "Você não selecionu nenhuma linha da tabela de peças "
-                            + "para realizar a exclusão.",
+                            + "para realizar a exclusão."  + " Usuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -567,14 +570,15 @@ public class GerarOrdemServico extends javax.swing.JFrame {
 
         }catch (BussinessException e) {
             JOptionPane.showMessageDialog(this, 
-                    e.getMessage(),
+                    e.getMessage() + " Usuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
             
         }catch (Exception e){
             System.out.println(e);
             JOptionPane.showMessageDialog(this, 
-                    "Ocorreu um erro ao Gerar a OS. Contate o suporte.",
+                    "Ocorreu um erro ao Gerar a OS. Contate o suporte."  
+                            + " Usuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -611,14 +615,15 @@ public class GerarOrdemServico extends javax.swing.JFrame {
             
         }catch (BussinessException e) {
             JOptionPane.showMessageDialog(this, 
-                    e.getMessage(),
+                    e.getMessage() + " Usuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
             
         }catch (Exception e) {
             System.out.println(e);
             JOptionPane.showMessageDialog(this, 
-                    "Ocorreu um erro ao Gravar as informações do Serviço. Contate o suporte.",
+                    "Ocorreu um erro ao Gravar as informações do Serviço. "
+                            + "Contate o suporte." + " Usuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -658,7 +663,7 @@ public class GerarOrdemServico extends javax.swing.JFrame {
             
         }catch (BussinessException e) {
             JOptionPane.showMessageDialog(this, 
-                    e.getMessage(),
+                    e.getMessage() + " Usuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
             
@@ -666,7 +671,8 @@ public class GerarOrdemServico extends javax.swing.JFrame {
             System.out.println(e.getMessage());
             JOptionPane.showMessageDialog(this, 
                     "Ocorreu um erro inesperado ao tentar inserir as peças na tabela. "
-                            + "Entre em contato com o suporte.",
+                            + "Entre em contato com o suporte." 
+                            + " Usuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
         }

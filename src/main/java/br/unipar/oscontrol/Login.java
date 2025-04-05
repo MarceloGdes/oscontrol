@@ -123,7 +123,7 @@ public class Login extends javax.swing.JFrame {
             
             if( usuarioDigitado.equals(usuarioPadrao) && senhaDigitada.equals(senhaPadrao)) {
                 
-                new TelaInicial().setVisible(true);
+                new TelaInicial(usuarioDigitado).setVisible(true);
                 dispose();
                 
             }else {

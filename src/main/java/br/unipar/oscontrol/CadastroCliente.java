@@ -17,13 +17,16 @@ import javax.swing.JOptionPane;
  * @author Marcelo
  */
 public class CadastroCliente extends javax.swing.JFrame {
-
+    
+    private String usuarioLogado;
+    
     /**
      * Creates new form CadastroCliente
      */
-    public CadastroCliente() {
+    public CadastroCliente(String usuarioLogado) {
         initComponents();
         setLocationRelativeTo(null);
+        this.usuarioLogado = usuarioLogado;
     }
     
     private void validateCliente(Cliente cliente) throws BussinessException {
@@ -341,19 +344,20 @@ public class CadastroCliente extends javax.swing.JFrame {
             var cliente = getCliente();
             var veiculo = getVeiculo();
             
-            //new GerarOrdemServico(cliente, veiculo).setVisible(true);
+            new GerarOrdemServico(cliente, veiculo, usuarioLogado).setVisible(true);
             
         }catch(BussinessException e){
             JOptionPane.showMessageDialog(
                     this, 
-                    e.getMessage(),
+                    e.getMessage() + "\nUsuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
             
         }catch (Exception e) {
             JOptionPane.showMessageDialog(
                     this,
-                    "Ocorreu um erro ao efetuar o login, por gentileza contate o suporte.",
+                    "Ocorreu um erro ao efetuar o login, por gentileza "
+                            + "contate o suporte. \nUsuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
         }
