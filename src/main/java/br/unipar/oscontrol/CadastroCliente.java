@@ -6,6 +6,7 @@ package br.unipar.oscontrol;
 
 import br.unipar.oscontrol.domain.Cliente;
 import br.unipar.oscontrol.domain.Endereco;
+import br.unipar.oscontrol.domain.OrdemServico;
 import br.unipar.oscontrol.domain.Veiculo;
 import br.unipar.oscontrol.exceptions.BussinessException;
 import java.time.LocalDate;
@@ -55,7 +56,6 @@ public class CadastroCliente extends javax.swing.JFrame {
        
        if(cliente.getEndereco().getUf()== null || cliente.getEndereco().getUf().isBlank())
             throw new BussinessException("Você não inseriu o estado (UF) do cliente.");
-       
     }
     
     private void validateVeiculo(Veiculo veiculo) throws BussinessException {
@@ -75,9 +75,7 @@ public class CadastroCliente extends javax.swing.JFrame {
             throw new BussinessException("Veículo com ano inferior à 1900.");
         
         if(veiculo.getAno() > (LocalDate.now().getYear() + 1))
-            throw new BussinessException("Veículo com ano superior à " + (LocalDate.now().getYear() + 1) + ".");
-        
-        
+            throw new BussinessException("Veículo com ano superior à " + (LocalDate.now().getYear() + 1) + "."); 
     }
     
     private Cliente getCliente() throws BussinessException {
@@ -100,16 +98,17 @@ public class CadastroCliente extends javax.swing.JFrame {
     }
     
     private Veiculo getVeiculo() throws BussinessException {
-
         var veiculo = new Veiculo();
         veiculo.setMarca(tfMarca.getText());
         veiculo.setModelo(tfModelo.getText());
         veiculo.setPlaca(tfPlaca.getText()); //Removendo todos os espaços em branco, caso haja.
         
-        //Valida se o Ano é composto apenas por número, para evitar exception do parse.
-        if(!tfAno.getText().matches("\\d+"))
-            throw new BussinessException("O ano do veículo está vazio ou contem apenas números, verifique.");
-        veiculo.setAno(Integer.parseInt(tfAno.getText()));
+        try{
+            veiculo.setAno(Integer.parseInt(tfAno.getText()));
+            
+        }catch (NumberFormatException e) {
+            throw new BussinessException("O ano do veículo está vazio ou não contem apenas números, verifique.");
+        }
         
         validateVeiculo(veiculo);
         return veiculo;
@@ -273,10 +272,10 @@ public class CadastroCliente extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(tfAno, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(96, 96, 96)
                 .addComponent(btSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(101, 101, 101))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -318,12 +317,13 @@ public class CadastroCliente extends javax.swing.JFrame {
                     .addComponent(jLabel15)
                     .addComponent(tfPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10)
-                    .addComponent(tfAno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel12)
-                        .addComponent(tfMarca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(tfMarca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel10)
+                        .addComponent(tfAno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(btSalvar)
                 .addContainerGap(34, Short.MAX_VALUE))
@@ -340,6 +340,8 @@ public class CadastroCliente extends javax.swing.JFrame {
         try {
             var cliente = getCliente();
             var veiculo = getVeiculo();
+            
+            //new GerarOrdemServico(cliente, veiculo).setVisible(true);
             
         }catch(BussinessException e){
             JOptionPane.showMessageDialog(

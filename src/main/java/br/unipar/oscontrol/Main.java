@@ -11,6 +11,6 @@ package br.unipar.oscontrol;
 public class Main {
 
     public static void main(String[] args) {
-        new TelaInicial().setVisible(true);
+        new GerarOrdemServico().setVisible(true);
     }
 }
