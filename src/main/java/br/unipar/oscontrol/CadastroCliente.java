@@ -6,7 +6,10 @@ package br.unipar.oscontrol;
 
 import br.unipar.oscontrol.domain.Cliente;
 import br.unipar.oscontrol.domain.Endereco;
+import br.unipar.oscontrol.domain.Veiculo;
 import br.unipar.oscontrol.exceptions.BussinessException;
+import java.time.LocalDate;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -22,11 +25,96 @@ public class CadastroCliente extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }
     
-    private void validarCliente(Cliente cliente) throws BussinessException {
+    private void validateCliente(Cliente cliente) throws BussinessException {
         if(cliente.getNome() == null || cliente.getNome().isBlank())
-            throw new BussinessException("Vocênão inseriu o nome do cliente.");
+            throw new BussinessException("Você não inseriu o nome do cliente.");
+        
+        if(cliente.getTelefone()== null || cliente.getTelefone().isBlank())
+            throw new BussinessException("Você não inseriu o telefone do cliente.");
+        
+        if(!cliente.getTelefone().matches("\\d+"))
+            throw new BussinessException("O telefone inserido não contem apenas números.");
+        
+         if(cliente.getEndereco().getCep() == null || cliente.getEndereco().getCep().isBlank())
+            throw new BussinessException("Você não inseriu o cep do cliente.");
+         
+         if(!cliente.getEndereco().getCep().matches("\\d+"))
+            throw new BussinessException("O CEP inserido não contem apenas números.");
+        
+        if(cliente.getEndereco().getLogradouro() == null || cliente.getEndereco().getLogradouro().isBlank())
+            throw new BussinessException("Você não inseriu o logradouro do cliente.");
+        
+        if(cliente.getEndereco().getNum()== null || cliente.getEndereco().getNum().isBlank())
+            throw new BussinessException("Você não inseriu o número do logradouro do cliente.");
+        
+        if(cliente.getEndereco().getBairro() == null || cliente.getEndereco().getBairro().isBlank())
+            throw new BussinessException("Você não inseriu o bairro do cliente.");
+        
+       if(cliente.getEndereco().getCidade()== null || cliente.getEndereco().getCidade().isBlank())
+            throw new BussinessException("Você não inseriu a cidade do cliente.");
+       
+       if(cliente.getEndereco().getUf()== null || cliente.getEndereco().getUf().isBlank())
+            throw new BussinessException("Você não inseriu o estado (UF) do cliente.");
+       
     }
+    
+    private void validateVeiculo(Veiculo veiculo) throws BussinessException {
+        if(veiculo.getPlaca() == null || veiculo.getPlaca().isBlank())
+            throw new BussinessException("Você não inseriu a placa do veículo.");
+        
+        if (!veiculo.getPlaca().matches("[a-zA-Z0-9]{7}"))
+            throw new BussinessException("Placa fora do padrão de 7 letras/números.");
+        
+        if(veiculo.getModelo()== null || veiculo.getModelo().isBlank())
+            throw new BussinessException("Você não inseriu o modelo do veículo.");
+        
+        if(veiculo.getMarca()== null || veiculo.getMarca().isBlank())
+            throw new BussinessException("Você não inseriu a marca do veículo.");
+        
+        if(veiculo.getAno() < 1900)
+            throw new BussinessException("Veículo com ano inferior à 1900.");
+        
+        if(veiculo.getAno() > (LocalDate.now().getYear() + 1))
+            throw new BussinessException("Veículo com ano superior à " + (LocalDate.now().getYear() + 1) + ".");
+        
+        
+    }
+    
+    private Cliente getCliente() throws BussinessException {
+        var endereco = new Endereco();
+        endereco.setBairro(tfBairro.getText());
+        endereco.setCep(tfCep.getText());
+        endereco.setCidade(tfCidade.getText());
+        endereco.setLogradouro(tfLogradouro.getText());
+        endereco.setUf(tfUf.getText());
+        endereco.setNum(tfNum.getText());
 
+        var cliente = new Cliente();
+        cliente.setNome(tfNome.getText());
+        cliente.setTelefone(tfTelefone.getText());
+        cliente.setEndereco(endereco);
+
+        validateCliente(cliente);
+
+        return cliente;
+    }
+    
+    private Veiculo getVeiculo() throws BussinessException {
+
+        var veiculo = new Veiculo();
+        veiculo.setMarca(tfMarca.getText());
+        veiculo.setModelo(tfModelo.getText());
+        veiculo.setPlaca(tfPlaca.getText()); //Removendo todos os espaços em branco, caso haja.
+        
+        //Valida se o Ano é composto apenas por número, para evitar exception do parse.
+        if(!tfAno.getText().matches("\\d+"))
+            throw new BussinessException("O ano do veículo está vazio ou contem apenas números, verifique.");
+        veiculo.setAno(Integer.parseInt(tfAno.getText()));
+        
+        validateVeiculo(veiculo);
+        return veiculo;
+}
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -37,6 +125,7 @@ public class CadastroCliente extends javax.swing.JFrame {
     private void initComponents() {
 
         jSeparator1 = new javax.swing.JSeparator();
+        jLabel13 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         tfNome = new javax.swing.JTextField();
@@ -55,11 +144,23 @@ public class CadastroCliente extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         tfUf = new javax.swing.JTextField();
         btSalvar = new javax.swing.JButton();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        tfMarca = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
+        tfModelo = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        tfAno = new javax.swing.JTextField();
+        jLabel15 = new javax.swing.JLabel();
+        tfPlaca = new javax.swing.JTextField();
+
+        jLabel13.setText("jLabel13");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setText("Cadastro de Cliente");
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Dados do Cliente");
 
         jLabel2.setText("Nome Completo:");
 
@@ -90,27 +191,61 @@ public class CadastroCliente extends javax.swing.JFrame {
             }
         });
 
+        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel11.setText("Dados do Veículo");
+
+        jLabel12.setText("Marca:");
+
+        tfMarca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfMarcaActionPerformed(evt);
+            }
+        });
+
+        jLabel14.setText("Modelo:");
+
+        jLabel10.setText("Ano:");
+
+        jLabel15.setText("Placa:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(2, 2, 2)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jLabel9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(tfUf, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(tfLogradouro))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(tfNome))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tfLogradouro)
-                                .addGap(18, 18, 18)
                                 .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tfNum, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(tfNum, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(tfBairro))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(tfCidade, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -118,34 +253,35 @@ public class CadastroCliente extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tfCep, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tfBairro, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tfCidade, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel9)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tfUf, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())
+                                .addComponent(tfCep))))
+                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel15)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tfPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel14)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tfModelo))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
-                        .addGap(188, 188, 188))))
+                        .addComponent(jLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tfMarca, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfAno, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(171, 171, 171))
+                .addGap(101, 101, 101))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(34, 34, 34)
+                .addGap(29, 29, 29)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -160,20 +296,37 @@ public class CadastroCliente extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(tfLogradouro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5)
-                    .addComponent(tfNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tfLogradouro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(tfBairro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(tfNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(tfCidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9)
                     .addComponent(tfUf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(27, 27, 27)
+                .addGap(30, 30, 30)
+                .addComponent(jLabel11)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14)
+                    .addComponent(tfModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel15)
+                    .addComponent(tfPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(tfAno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel12)
+                        .addComponent(tfMarca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
                 .addComponent(btSalvar)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
 
         pack();
@@ -184,27 +337,41 @@ public class CadastroCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_tfUfActionPerformed
 
     private void btSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSalvarActionPerformed
-        var endereco = new Endereco();
-        endereco.setBairro(tfBairro.getText());
-        endereco.setCep(tfCep.getText());
-        endereco.setCidade(tfCidade.getText());
-        endereco.setLogradouro(tfLogradouro.getText());
-        endereco.setUf(tfUf.getText());
-        
-        var cliente = new Cliente();
-        cliente.setNome(tfNome.getText());
-        cliente.setTelefone(tfTelefone.getText());
-        cliente.setEndereco(endereco);
-        
-        //validarCliente(cliente);
-
+        try {
+            var cliente = getCliente();
+            var veiculo = getVeiculo();
+            
+        }catch(BussinessException e){
+            JOptionPane.showMessageDialog(
+                    this, 
+                    e.getMessage(),
+                    "Atenção!",
+                    JOptionPane.ERROR_MESSAGE);
+            
+        }catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Ocorreu um erro ao efetuar o login, por gentileza contate o suporte.",
+                    "Atenção!",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btSalvarActionPerformed
+
+    private void tfMarcaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfMarcaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfMarcaActionPerformed
 
    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btSalvar;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -214,12 +381,16 @@ public class CadastroCliente extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTextField tfAno;
     private javax.swing.JTextField tfBairro;
     private javax.swing.JTextField tfCep;
     private javax.swing.JTextField tfCidade;
     private javax.swing.JTextField tfLogradouro;
+    private javax.swing.JTextField tfMarca;
+    private javax.swing.JTextField tfModelo;
     private javax.swing.JTextField tfNome;
     private javax.swing.JTextField tfNum;
+    private javax.swing.JTextField tfPlaca;
     private javax.swing.JTextField tfTelefone;
     private javax.swing.JTextField tfUf;
     // End of variables declaration//GEN-END:variables
