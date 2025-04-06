@@ -23,6 +23,34 @@ public class OrdemServico {
     public OrdemServico(Cliente cliente, Veiculo veiculo) {
         this.cliente = cliente;
         this.veiculo = veiculo;
+        
+        valorTotalServicos = 0.0;
+        valorTotalOs = 0.0;
+        valorTotalPecas = 0.0;
+    }
+    
+    public Double calcValorTotalServicos() { 
+        valorTotalServicos = 0.0;
+        servicos.forEach(s -> {
+            valorTotalServicos += s.getValor();
+        });
+        
+        return valorTotalServicos;
+    }
+    
+    public Double calcValorTotalPecas() {   
+        valorTotalPecas = 0.0;
+        pecas.forEach(p -> {
+            valorTotalPecas += p.calcValorTotal();
+        });
+        
+        return valorTotalPecas;
+    }
+    
+    public Double calcValorTotal() {
+        valorTotalOs = 0.0;
+        valorTotalOs = valorTotalPecas + valorTotalServicos;
+        return valorTotalOs;
     }
 
     public Cliente getCliente() {

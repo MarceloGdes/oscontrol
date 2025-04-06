@@ -10,9 +10,15 @@ package br.unipar.oscontrol.domain;
  */
 public class Peca {
     private String nome;
-    private Integer qntd;
-    private Double valorUn;
-    private Double valorTotal;
+    private Integer qntd = 0;
+    private Double valorUn = 0.0;
+    private Double valorTotal = 0.0;
+    
+    public Double calcValorTotal() {
+        valorTotal = 0.0;
+        valorTotal = qntd * valorUn;
+        return valorTotal;
+    }
 
     public String getNome() {
         return nome;

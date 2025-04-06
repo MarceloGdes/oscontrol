@@ -9,6 +9,7 @@ br\unipar\oscontrol\CadastroCliente$1.class
 br\unipar\oscontrol\GerarOrdemServico$5.class
 br\unipar\oscontrol\Login.class
 br\unipar\oscontrol\CadastroCliente.class
+br\unipar\oscontrol\CriticaOrdemServiço.class
 br\unipar\oscontrol\GerarOrdemServico$3.class
 br\unipar\oscontrol\Login$2.class
 br\unipar\oscontrol\exceptions\BussinessException.class

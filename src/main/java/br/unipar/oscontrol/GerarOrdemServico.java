@@ -6,8 +6,11 @@ package br.unipar.oscontrol;
 
 import br.unipar.oscontrol.domain.Cliente;
 import br.unipar.oscontrol.domain.OrdemServico;
+import br.unipar.oscontrol.domain.Peca;
+import br.unipar.oscontrol.domain.Servico;
 import br.unipar.oscontrol.domain.Veiculo;
 import br.unipar.oscontrol.exceptions.BussinessException;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -58,7 +61,7 @@ public class GerarOrdemServico extends javax.swing.JFrame {
     private void loadPecasTable(){
         pecasTableModel.addColumn("Nome");
         pecasTableModel.addColumn("Qtd");
-        pecasTableModel.addColumn("Valor");
+        pecasTableModel.addColumn("Valor Un");
         
         tbPecas.setModel(pecasTableModel);
         tbPecas.getColumnModel()
@@ -124,6 +127,65 @@ public class GerarOrdemServico extends javax.swing.JFrame {
         }
     }
     
+    private void atualizarOS() {
+        os.setServicos(new ArrayList<>());
+        os.setPecas(new ArrayList<>());
+        
+        for (int i = 0; i < servicosTableModel.getRowCount(); i++) {
+            var servico = new Servico();
+            
+            try {
+               servico.setDescricao((String) servicosTableModel.getValueAt(i, 0)); 
+               
+               servico.setValor(Double.parseDouble(
+                       servicosTableModel.getValueAt(i, 1).toString()));
+               
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                JOptionPane.showMessageDialog(this, 
+                    "Ocorreu um erro ao Gravar as informações do Serviço. "
+                        + "Contate o suporte." + "\nUsuário: " + usuarioLogado,
+                    "Atenção!",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+            
+            os.getServicos().add(servico);
+        }
+        
+        for (int i = 0; i < pecasTableModel.getRowCount(); i++) {
+            Peca peca = new Peca();
+            
+            try {
+               peca.setNome((String) pecasTableModel.getValueAt(i, 0));
+               
+               peca.setQntd(Integer.parseInt(
+                       pecasTableModel.getValueAt(i, 1).toString()
+               ));
+               
+               peca.setValorUn(Double.parseDouble(
+                       pecasTableModel.getValueAt(i, 2).toString()
+               ));
+               
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                JOptionPane.showMessageDialog(this, 
+                    "Ocorreu um erro ao Gravar as informações das pecas. "
+                        + "Contate o suporte." + "\nUsuário: " + usuarioLogado,
+                    "Atenção!",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+            
+            os.getPecas().add(peca);
+        }
+        
+        var valorTotalServicos = os.calcValorTotalServicos();
+        var valorTotalPecas = os.calcValorTotalPecas();
+        var valorTotalOS = os.calcValorTotal();
+        
+        lbVlTotalServicos.setText(valorTotalServicos.toString());
+        lbVlTotalPecas.setText(valorTotalPecas.toString());
+        lbVlTotalOS.setText(valorTotalOS.toString());
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -177,7 +239,7 @@ public class GerarOrdemServico extends javax.swing.JFrame {
 
         jPasswordField1.setText("jPasswordField1");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -495,11 +557,12 @@ public class GerarOrdemServico extends javax.swing.JFrame {
         if(servicoSelectedRow >= 0) {
             servicosTableModel.removeRow(servicoSelectedRow);
             servicoSelectedRow = -1;
+            atualizarOS();
             
         }else {
             JOptionPane.showMessageDialog(this, 
                     "Você não selecionou nenhuma linha da tabela de serviços "
-                            + "para realizar a exclusão."  + " Usuário: " + usuarioLogado,
+                            + "para realizar a exclusão."  + "\nUsuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -518,7 +581,7 @@ public class GerarOrdemServico extends javax.swing.JFrame {
         }else {
             JOptionPane.showMessageDialog(this, 
                     "Você não selecionou nenhuma linha da tabela de serviços"
-                            + " para realizar a edição."  + " Usuário: " + usuarioLogado,
+                            + " para realizar a edição."  + "\nUsuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -539,7 +602,7 @@ public class GerarOrdemServico extends javax.swing.JFrame {
         }else {
             JOptionPane.showMessageDialog(this, 
                     "Você não selecionou nenhuma linha da tabela de peças"
-                            + " para realizar a edição."  + " Usuário: " + usuarioLogado,
+                            + " para realizar a edição."  + "\nUsuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -551,11 +614,12 @@ public class GerarOrdemServico extends javax.swing.JFrame {
         if(pecaSelectedRow >= 0) {
             pecasTableModel.removeRow(pecaSelectedRow);
             pecaSelectedRow = -1;
+            atualizarOS();
             
         }else {
             JOptionPane.showMessageDialog(this, 
                     "Você não selecionu nenhuma linha da tabela de peças "
-                            + "para realizar a exclusão."  + " Usuário: " + usuarioLogado,
+                            + "para realizar a exclusão."  + "\nUsuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -567,10 +631,18 @@ public class GerarOrdemServico extends javax.swing.JFrame {
             if(os.getDescProblemas() == null || os.getDescProblemas().isBlank())
                 throw new BussinessException("Você não especificou o problema do veículo.");
             
-
+            if(os.getServicos() == null || os.getServicos().isEmpty())
+                throw new BussinessException("É necessário informar ao menos um Serviço na OS.");
+            
+            if(os.getPecas() == null){
+                os.setPecas(new ArrayList<>());
+            }
+            
+            new CriticaOrdemServiço(os).setVisible(true);
+            
         }catch (BussinessException e) {
             JOptionPane.showMessageDialog(this, 
-                    e.getMessage() + " Usuário: " + usuarioLogado,
+                    e.getMessage() + "\nUsuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
             
@@ -578,7 +650,7 @@ public class GerarOrdemServico extends javax.swing.JFrame {
             System.out.println(e);
             JOptionPane.showMessageDialog(this, 
                     "Ocorreu um erro ao Gerar a OS. Contate o suporte."  
-                            + " Usuário: " + usuarioLogado,
+                            + "\nUsuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -608,6 +680,8 @@ public class GerarOrdemServico extends javax.swing.JFrame {
             
             JOptionPane.showMessageDialog(this, "Serviço adicionado com sucesso.");
             
+            atualizarOS();
+            
             tfServicoDesc.setText("");
             tfServicoValor.setText("");
             
@@ -615,15 +689,15 @@ public class GerarOrdemServico extends javax.swing.JFrame {
             
         }catch (BussinessException e) {
             JOptionPane.showMessageDialog(this, 
-                    e.getMessage() + " Usuário: " + usuarioLogado,
+                    e.getMessage() + "\nUsuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
             
         }catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
             JOptionPane.showMessageDialog(this, 
                     "Ocorreu um erro ao Gravar as informações do Serviço. "
-                            + "Contate o suporte." + " Usuário: " + usuarioLogado,
+                            + "Contate o suporte." + "\nUsuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -658,12 +732,13 @@ public class GerarOrdemServico extends javax.swing.JFrame {
             tfPecaValor.setText("");
             
             JOptionPane.showMessageDialog(this, "Serviço adicionado com sucesso.");
+            atualizarOS();
             
             pecaSelectedRow = -1;
             
         }catch (BussinessException e) {
             JOptionPane.showMessageDialog(this, 
-                    e.getMessage() + " Usuário: " + usuarioLogado,
+                    e.getMessage() + "\nUsuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
             
@@ -672,7 +747,7 @@ public class GerarOrdemServico extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, 
                     "Ocorreu um erro inesperado ao tentar inserir as peças na tabela. "
                             + "Entre em contato com o suporte." 
-                            + " Usuário: " + usuarioLogado,
+                            + "\nUsuário: " + usuarioLogado,
                     "Atenção!",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -722,4 +797,6 @@ public class GerarOrdemServico extends javax.swing.JFrame {
     private javax.swing.JTextField tfServicoValor;
     private javax.swing.JTextArea txDescricaoProblema;
     // End of variables declaration//GEN-END:variables
+
+  
 }
