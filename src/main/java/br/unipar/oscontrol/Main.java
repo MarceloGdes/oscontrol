@@ -4,6 +4,8 @@
 
 package br.unipar.oscontrol;
 
+import br.unipar.oscontrol.domain.OrdemServico;
+
 /**
  *
  * @author Marcelo

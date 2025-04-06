@@ -64,5 +64,13 @@ public class Endereco {
     public void setUf(String uf) {
         this.uf = uf;
     }
+
+    @Override
+    public String toString() {
+        return logradouro + ", " + num + ", " + bairro + ", " + cidade + ", " +
+                uf + " - " + cep;
+    }
+    
+    
    
 }

@@ -45,6 +45,11 @@ public class Veiculo {
     public void setAno(Integer ano) {
         this.ano = ano;
     }
+
+    @Override
+    public String toString() {
+        return marca + " " + modelo + " " + ano + " - Placa: " + placa;
+    }
     
     
 }

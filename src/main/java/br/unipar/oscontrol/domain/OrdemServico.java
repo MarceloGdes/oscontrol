@@ -28,6 +28,11 @@ public class OrdemServico {
         valorTotalOs = 0.0;
         valorTotalPecas = 0.0;
     }
+
+    public OrdemServico() {
+    }
+    
+    
     
     public Double calcValorTotalServicos() { 
         valorTotalServicos = 0.0;

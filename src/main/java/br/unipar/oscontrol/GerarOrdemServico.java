@@ -36,9 +36,7 @@ public class GerarOrdemServico extends javax.swing.JFrame {
         os = new OrdemServico(cliente, veiculo);
         
         lbCliente.setText(cliente.getNome());
-        lbVeiculo.setText(veiculo.getMarca() + " " + 
-            veiculo.getModelo() + " " +
-            veiculo.getAno()); 
+        lbVeiculo.setText(veiculo.toString()); 
 
         loadServicosTable();
         loadPecasTable();
@@ -638,7 +636,7 @@ public class GerarOrdemServico extends javax.swing.JFrame {
                 os.setPecas(new ArrayList<>());
             }
             
-            new CriticaOrdemServiço(os).setVisible(true);
+            new CriticaOrdemServico(os, usuarioLogado).setVisible(true);
             
         }catch (BussinessException e) {
             JOptionPane.showMessageDialog(this, 
